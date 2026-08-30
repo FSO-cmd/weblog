@@ -1,0 +1,348 @@
+{{define "dashboard"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 6%; }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.current { color: var(--rust); }
+
+        .nav-links a.new {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.new:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Page head
+        ------------------------------ */
+
+        .page-head { padding: 46px 0 6px; }
+
+        .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 10px;
+        }
+
+        .kicker::before { content: "— "; }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(30px, 4vw, 42px);
+            letter-spacing: -0.8px;
+            margin: 0;
+        }
+
+        /* ------------------------------
+           Post list
+        ------------------------------ */
+
+        .posts { padding: 30px 0 100px; display: grid; gap: 24px; }
+
+        .post {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 28px 30px 24px;
+        }
+
+        .post .holes { display: flex; gap: 8px; margin-bottom: 16px; }
+        .post .holes span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .post-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .post h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 23px;
+            letter-spacing: -0.4px;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .status {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            padding: 3px 8px;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+
+        .status.private {
+            color: var(--pine-deep);
+            border-color: var(--pine-deep);
+        }
+
+        .status.public {
+            color: var(--ink-soft);
+            border-color: var(--line);
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--line);
+            margin-bottom: 18px;
+        }
+
+        .content {
+            font-family: 'Source Serif 4', serif;
+            color: var(--ink);
+            line-height: 1.7;
+            font-size: 16px;
+            margin-bottom: 22px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 18px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .buttons a,
+        .buttons button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--ink);
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 500;
+            font-family: 'Inter', Arial, sans-serif;
+            transition: border-color .15s ease, color .15s ease;
+        }
+
+        .buttons a.edit:hover { border-color: var(--pine); color: var(--pine-deep); }
+        .buttons a.share:hover { border-color: var(--pine); color: var(--pine-deep); }
+        .buttons button.delete:hover { border-color: var(--rust); color: var(--rust); }
+
+        /* ------------------------------
+           Empty state
+        ------------------------------ */
+
+        .empty {
+            padding: 60px 6% 120px;
+            text-align: center;
+        }
+
+        .empty p.kicker { justify-content: center; display: flex; }
+
+        .empty h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 26px;
+            margin: 6px 0 10px;
+        }
+
+        .empty p.sub { color: var(--ink-soft); margin: 0; }
+
+        /* ------------------------------
+           Responsive
+        ------------------------------ */
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            .nav-links a:not(.new) { padding: 8px 8px; }
+            .post { padding: 22px 20px 20px; }
+            .post-top { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <a class="logo" href="/blog"><b>§</b> My Weblog</a>
+    <div class="nav-links">
+        <a href="/dashboard" class="current">Dashboard</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+        <a href="/posts/new" class="new">New Post</a>
+    </div>
+</nav>
+
+<div class="wrap page-head">
+    <p class="kicker">Your entries</p>
+    <h1>My Dashboard</h1>
+</div>
+
+{{if .}}
+<div class="wrap posts">
+    {{range .}}
+    <div class="post">
+
+        <div class="holes"><span></span><span></span></div>
+
+        <div class="post-top">
+            <h2>{{.Title}}</h2>
+
+            {{if .IsPrivate}}
+            <span class="status private">🔒 Private</span>
+            {{else}}
+            <span class="status public">🌐 Public</span>
+            {{end}}
+        </div>
+
+        {{if .Image}}
+        <img class="post-image" src="/{{.Image}}" alt="Post image">
+        {{end}}
+
+        <div class="content">{{.Content}}</div>
+
+        <div class="buttons">
+            <a class="edit" href="/posts/{{.ID}}/edit">✏️ Edit</a>
+
+            {{if .IsPrivate}}
+            <a class="share" href="/posts/{{.ID}}/shares/manage">🔗 Manage sharing</a>
+            {{end}}
+
+            <button class="delete" onclick="deletePost({{.ID}})">🗑️ Delete</button>
+        </div>
+
+    </div>
+    {{end}}
+</div>
+{{else}}
+<div class="empty">
+    <p class="kicker">Nothing yet</p>
+    <h2>No posts yet</h2>
+    <p class="sub">You haven't created any posts.</p>
+</div>
+{{end}}
+
+<script>
+    async function deletePost(id) {
+        if (!confirm("Are you sure you want to delete this post?")) return;
+
+        const response = await fetch("/posts/" + id, { method: "DELETE" });
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("Failed to delete post");
+        }
+    }
+</script>
+
+</body>
+</html>
+{{end}}

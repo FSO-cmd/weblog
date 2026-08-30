@@ -1,0 +1,256 @@
+{{define "profile"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 6%; }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.current { color: var(--rust); }
+
+        .nav-links a.new {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.new:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Page head
+        ------------------------------ */
+
+        .page-head { max-width: 520px; margin: 0 auto; padding: 46px 6% 8px; }
+
+        .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 10px;
+        }
+
+        .kicker::before { content: "— "; }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(26px, 4vw, 34px);
+            letter-spacing: -0.6px;
+            margin: 0;
+        }
+
+        /* ------------------------------
+           Profile card
+        ------------------------------ */
+
+        .sheet { max-width: 520px; margin: 26px auto 100px; padding: 0 6%; }
+
+        .card {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 34px 32px 8px;
+            margin-bottom: 24px;
+        }
+
+        .holes { display: flex; gap: 8px; margin-bottom: 20px; }
+        .holes span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .username {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 28px;
+            letter-spacing: -0.4px;
+            margin: 0 0 6px;
+        }
+
+        .user-id {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            margin: 0 0 22px;
+        }
+
+        /* ------------------------------
+           Action list (ledger style)
+        ------------------------------ */
+
+        .actions {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .actions a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px;
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 15px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--line);
+            transition: background .15s ease;
+        }
+
+        .actions a:last-child { border-bottom: none; }
+
+        .actions a:hover { background: var(--paper); }
+
+        .actions a::after {
+            content: "→";
+            color: var(--ink-soft);
+            font-weight: 400;
+            transition: transform .15s ease;
+        }
+
+        .actions a:hover::after {
+            color: var(--rust);
+            transform: translateX(3px);
+        }
+
+        .actions a.logout {
+            color: var(--rust);
+        }
+
+        /* ------------------------------
+           Responsive
+        ------------------------------ */
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            .card, .actions a { padding-left: 22px; padding-right: 22px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <a class="logo" href="/blog"><b>§</b> My Weblog</a>
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/profile" class="current">Profile</a>
+        <a href="/logout">Logout</a>
+        <a href="/posts/new" class="new">New Post</a>
+    </div>
+</nav>
+
+<div class="page-head">
+    <p class="kicker">Account</p>
+    <h1>Your profile</h1>
+</div>
+
+<div class="sheet">
+
+    <div class="card">
+        <div class="holes"><span></span><span></span></div>
+        <p class="username">{{.Username}}</p>
+        <p class="user-id">User ID: {{.ID}}</p>
+    </div>
+
+    <div class="actions">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/change-username">Change username</a>
+        <a href="/change-password">Change password</a>
+        <a class="logout" href="/logout">Logout</a>
+    </div>
+
+</div>
+
+</body>
+</html>
+{{end}}

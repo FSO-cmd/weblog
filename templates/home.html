@@ -1,0 +1,445 @@
+{{define "home"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Weblog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; scroll-behavior: auto !important; }
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 6%;
+        }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.enter {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.enter:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Hero — split layout
+        ------------------------------ */
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 40px;
+            align-items: center;
+            padding: 70px 0 90px;
+        }
+
+        .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 18px;
+        }
+
+        .kicker::before { content: "— "; }
+
+        .hero h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(38px, 4.6vw, 56px);
+            line-height: 1.12;
+            letter-spacing: -1px;
+            margin: 0 0 22px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            font-weight: 500;
+            color: var(--pine-deep);
+        }
+
+        .hero p.lede {
+            max-width: 440px;
+            color: var(--ink-soft);
+            font-size: 16.5px;
+            line-height: 1.7;
+            margin: 0 0 32px;
+        }
+
+        .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
+
+        .button {
+            display: inline-block;
+            padding: 13px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .primary-button { background: var(--rust); color: #fdf5ee; }
+        .primary-button:hover { background: #954024; }
+
+        .secondary-button { background: transparent; color: var(--ink); border-color: var(--ink); }
+        .secondary-button:hover { background: var(--card); }
+
+        .tally {
+            display: flex;
+            gap: 26px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .tally strong {
+            display: block;
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* ------------------------------
+           Hero — card catalog mockup
+        ------------------------------ */
+
+        .catalog {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+            aspect-ratio: 4 / 5;
+        }
+
+        .catalog .deck {
+            position: absolute;
+            inset: 0;
+            border-radius: 3px;
+            border: 1px solid var(--line);
+            background: var(--card);
+        }
+
+        .catalog .deck:nth-child(1) { transform: rotate(-6deg) translateY(6px); opacity: .55; }
+        .catalog .deck:nth-child(2) { transform: rotate(4deg) translateY(2px); opacity: .8; }
+
+        .catalog .post-card {
+            position: absolute;
+            inset: 0;
+            border-radius: 3px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            padding: 26px 24px 22px;
+            box-shadow: 0 18px 30px -18px rgba(32, 31, 27, 0.35);
+        }
+
+        .post-card .holes { display: flex; gap: 8px; margin-bottom: 18px; }
+        .post-card .holes span {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .post-card .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--pine-deep);
+            border: 1px solid var(--pine-deep);
+            border-radius: 3px;
+            padding: 3px 8px;
+            margin-bottom: 16px;
+        }
+
+        .post-card h4 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 21px;
+            margin: 0 0 10px;
+            line-height: 1.25;
+        }
+
+        .post-card p {
+            font-family: 'Source Serif 4', serif;
+            color: var(--ink-soft);
+            font-size: 14px;
+            line-height: 1.65;
+            margin: 0 0 22px;
+        }
+
+        .post-card .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-soft);
+            border-top: 1px dashed var(--line);
+            padding-top: 14px;
+        }
+
+        /* ------------------------------
+           Features — ledger list
+        ------------------------------ */
+
+        .ledger { padding: 10px 0 80px; }
+
+        .ledger-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 16px;
+            margin-bottom: 6px;
+        }
+
+        .ledger-head h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 26px;
+            margin: 0;
+            letter-spacing: -0.4px;
+        }
+
+        .ledger-head span {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .entry {
+            display: grid;
+            grid-template-columns: 60px 1fr 2fr;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--line);
+            align-items: baseline;
+        }
+
+        .entry .num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            color: var(--rust);
+        }
+
+        .entry h3 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 19px;
+            margin: 0;
+        }
+
+        .entry p {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 14.5px;
+            line-height: 1.65;
+        }
+
+        /* ------------------------------
+           Footer
+        ------------------------------ */
+
+        footer.wrap {
+            display: flex;
+            justify-content: space-between;
+            padding: 26px 6% 34px;
+            border-top: 1px solid var(--line);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        /* ------------------------------
+           Responsive
+        ------------------------------ */
+
+        @media (max-width: 860px) {
+            .hero { grid-template-columns: 1fr; padding: 46px 0 60px; text-align: left; }
+            .catalog { max-width: 280px; margin: 10px 0 0; }
+            .entry { grid-template-columns: 40px 1fr; }
+            .entry p { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            .hero-buttons { flex-direction: column; }
+            .button { text-align: center; }
+            footer.wrap { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <div class="logo"><b>§</b> My Weblog</div>
+    <div class="nav-links">
+        <a href="/login">Login</a>
+        <a href="/register" class="enter">Register</a>
+    </div>
+</nav>
+
+<section class="wrap hero">
+
+    <div>
+        <p class="kicker">A weblog, kept the old-fashioned way</p>
+
+        <h1>Write it down.<br><em>Share it if you like.</em></h1>
+
+        <p class="lede">
+            Post your thoughts, decide who's allowed to read the private
+            ones, and let people talk back in the comments.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="/register" class="button primary-button">Get Started</a>
+            <a href="/login" class="button secondary-button">Sign In</a>
+        </div>
+
+        <div class="tally">
+            <div><strong>✍️</strong>Post anything</div>
+            <div><strong>🔒</strong>Keep it private</div>
+            <div><strong>💬</strong>Talk it over</div>
+        </div>
+    </div>
+
+    <div class="catalog">
+        <div class="deck"></div>
+        <div class="deck"></div>
+        <div class="post-card">
+            <div class="holes"><span></span><span></span></div>
+            <div class="tag">🔒 private</div>
+            <h4>Notes on slow mornings</h4>
+            <p>Started keeping the coffee ritual longer this week, and it's changed how the rest of the day reads&hellip;</p>
+            <div class="meta">
+                <span>by you</span>
+                <span>3 comments</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<section class="wrap ledger">
+
+    <div class="ledger-head">
+        <h2>What's inside</h2>
+        <span>03 things</span>
+    </div>
+
+    <div class="entry">
+        <span class="num">01</span>
+        <h3>Create Posts</h3>
+        <p>Write blog posts with a title, content and an optional image.</p>
+    </div>
+
+    <div class="entry">
+        <span class="num">02</span>
+        <h3>Private Posts</h3>
+        <p>Keep your posts private and choose exactly which users can access them.</p>
+    </div>
+
+    <div class="entry">
+        <span class="num">03</span>
+        <h3>Comments</h3>
+        <p>Discuss posts and share your thoughts with other users.</p>
+    </div>
+
+</section>
+
+<footer class="wrap">
+    <span>Mahdi_Orangi &copy; 2026</span>
+
+</footer>
+
+</body>
+</html>
+{{end}}

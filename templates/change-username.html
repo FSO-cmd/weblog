@@ -1,0 +1,262 @@
+{{define "change-username"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Username</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 6%; }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.current { color: var(--rust); }
+
+        .nav-links a.new {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.new:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Page head
+        ------------------------------ */
+
+        .page-head { max-width: 480px; margin: 0 auto; padding: 46px 6% 8px; }
+
+        .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 10px;
+        }
+
+        .kicker::before { content: "— "; }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(26px, 4vw, 34px);
+            letter-spacing: -0.6px;
+            margin: 0;
+        }
+
+        /* ------------------------------
+           Form card
+        ------------------------------ */
+
+        .sheet {
+            max-width: 480px;
+            margin: 26px auto 100px;
+            padding: 0 6%;
+        }
+
+        form {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 34px 32px 30px;
+        }
+
+        .holes { display: flex; gap: 8px; margin-bottom: 22px; }
+        .holes span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .field { margin-bottom: 22px; }
+
+        .field label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11.5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 9px;
+        }
+
+        .field input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            background: transparent;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 16px;
+            color: var(--ink);
+            padding: 6px 2px 10px;
+            outline: none;
+            transition: border-color .15s ease;
+        }
+
+        .field input:focus {
+            border-color: var(--pine);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background: var(--rust);
+            color: #fdf5ee;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s ease, transform .15s ease;
+            margin-top: 6px;
+        }
+
+        button[type="submit"]:hover {
+            background: #954024;
+            transform: translateY(-1px);
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin: 18px auto 0;
+            max-width: 480px;
+            padding: 0 6%;
+            font-size: 14px;
+            color: var(--ink-soft);
+            text-decoration: none;
+        }
+
+        .back:hover { color: var(--ink); }
+
+        /* ------------------------------
+           Responsive
+        ------------------------------ */
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            form { padding: 26px 22px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <a class="logo" href="/blog"><b>§</b> My Weblog</a>
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/profile" class="current">Profile</a>
+        <a href="/logout">Logout</a>
+        <a href="/posts/new" class="new">New Post</a>
+    </div>
+</nav>
+
+<div class="page-head">
+    <p class="kicker">Account settings</p>
+    <h1>Change your username</h1>
+</div>
+
+<div class="sheet">
+    <form action="/change-username" method="POST">
+
+        <div class="holes"><span></span><span></span></div>
+
+        <div class="field">
+            <label for="username">New username</label>
+            <input id="username" type="text" name="username" required>
+        </div>
+
+        <button type="submit">Change Username</button>
+
+    </form>
+</div>
+
+<a class="back" href="/profile">← Back to profile</a>
+
+</body>
+</html>
+{{end}}

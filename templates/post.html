@@ -1,0 +1,488 @@
+{{define "post"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{.Title}}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 6%; }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.new {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.new:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Container
+        ------------------------------ */
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 36px 6% 100px;
+        }
+
+        .back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 22px;
+            color: var(--ink-soft);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back:hover { color: var(--rust); }
+
+        /* ------------------------------
+           Post
+        ------------------------------ */
+
+        .post {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 36px 36px 32px;
+        }
+
+        .holes { display: flex; gap: 8px; margin-bottom: 20px; }
+        .holes span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .post h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(28px, 4.5vw, 40px);
+            letter-spacing: -0.6px;
+            line-height: 1.15;
+            margin: 0 0 10px;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .author {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+        }
+
+        .private-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--pine-deep);
+            border: 1px solid var(--pine-deep);
+            border-radius: 3px;
+            padding: 2px 7px;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 460px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--line);
+            margin-bottom: 26px;
+        }
+
+        .content {
+            font-family: 'Source Serif 4', serif;
+            font-size: 18px;
+            line-height: 1.85;
+            white-space: pre-wrap;
+            color: var(--ink);
+        }
+
+        /* ------------------------------
+           Comments
+        ------------------------------ */
+
+        .comments-section {
+            margin-top: 30px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 32px 36px;
+        }
+
+        .comments-section h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 22px;
+            margin: 0 0 6px;
+        }
+
+        .comments-section .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 20px;
+        }
+
+        .comments-section .kicker::before { content: "— "; }
+
+        #comments { margin-bottom: 4px; }
+
+        .comment {
+            padding: 16px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .comment:last-child { border-bottom: none; }
+
+        .comment-author {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .comment-date {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--ink-soft);
+            font-size: 11.5px;
+            margin-bottom: 8px;
+        }
+
+        .comment-content {
+            font-family: 'Source Serif 4', serif;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            font-size: 15.5px;
+            color: var(--ink);
+        }
+
+        .no-comments {
+            color: var(--ink-soft);
+            padding: 10px 0 4px;
+            font-size: 14.5px;
+        }
+
+        /* Comment form */
+
+        .comment-form { margin-top: 22px; }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 110px;
+            resize: vertical;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--ink);
+            font-family: 'Source Serif 4', serif;
+            font-size: 15.5px;
+            line-height: 1.7;
+            outline: none;
+            transition: border-color .15s ease;
+        }
+
+        .comment-form textarea::placeholder { color: var(--ink-soft); opacity: .7; }
+
+        .comment-form textarea:focus { border-color: var(--pine); }
+
+        .comment-form button {
+            margin-top: 12px;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 6px;
+            background: var(--rust);
+            color: #fdf5ee;
+            cursor: pointer;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background .15s ease, transform .15s ease;
+        }
+
+        .comment-form button:hover {
+            background: #954024;
+            transform: translateY(-1px);
+        }
+
+        .message {
+            margin-top: 12px;
+            color: var(--ink-soft);
+            font-size: 13.5px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ------------------------------
+           Responsive
+        ------------------------------ */
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            .post { padding: 26px 22px 24px; }
+            .comments-section { padding: 24px 22px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <a class="logo" href="/blog"><b>§</b> My Weblog</a>
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+        <a href="/posts/new" class="new">New Post</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <a class="back" href="/blog">← Back to blog</a>
+
+    <article class="post">
+
+        <div class="holes"><span></span><span></span></div>
+
+        <h1>{{.Title}}</h1>
+
+        <div class="meta-row">
+            <span class="author">by {{.Author}}</span>
+            {{if .IsPrivate}}<span class="private-tag">🔒 private</span>{{end}}
+        </div>
+
+        {{if .Image}}
+        <img class="post-image" src="/{{.Image}}" alt="Post image">
+        {{end}}
+
+        <div class="content">{{.Content}}</div>
+
+    </article>
+
+    <section class="comments-section">
+
+        <p class="kicker">Discussion</p>
+        <h2>Comments</h2>
+
+        <div id="comments">Loading comments...</div>
+
+        <form id="comment-form" class="comment-form">
+            <textarea
+                    id="comment-content"
+                    name="content"
+                    placeholder="Write your comment..."
+                    required
+            ></textarea>
+
+            <button type="submit">Send Comment</button>
+        </form>
+
+        <div id="comment-message" class="message"></div>
+
+    </section>
+
+</div>
+
+<script>
+    const postID = {{.ID}};
+
+    async function loadComments() {
+        const commentsContainer = document.getElementById("comments");
+
+        try {
+            const response = await fetch("/posts/" + postID + "/comments");
+
+            if (!response.ok) {
+                commentsContainer.innerHTML = "Failed to load comments.";
+                return;
+            }
+
+            const comments = await response.json();
+
+            if (!comments || comments.length === 0) {
+                commentsContainer.innerHTML =
+                    '<div class="no-comments">No comments yet.</div>';
+                return;
+            }
+
+            commentsContainer.innerHTML = "";
+
+            comments.forEach(comment => {
+                const element = document.createElement("div");
+                element.className = "comment";
+
+                const author = document.createElement("div");
+                author.className = "comment-author";
+                author.textContent = comment.Author;
+
+                const date = document.createElement("div");
+                date.className = "comment-date";
+                date.textContent = new Date(comment.CreatedAt).toLocaleString();
+
+                const content = document.createElement("div");
+                content.className = "comment-content";
+                content.textContent = comment.Content;
+
+                element.appendChild(author);
+                element.appendChild(date);
+                element.appendChild(content);
+
+                commentsContainer.appendChild(element);
+            });
+
+        } catch (error) {
+            commentsContainer.innerHTML = "Failed to load comments.";
+            console.error(error);
+        }
+    }
+
+    document.getElementById("comment-form")
+        .addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const textarea = document.getElementById("comment-content");
+            const message = document.getElementById("comment-message");
+            const content = textarea.value.trim();
+
+            if (!content) {
+                message.textContent = "Comment cannot be empty.";
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    "/posts/" + postID + "/comments",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: new URLSearchParams({ content })
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    message.textContent =
+                        result.message || "Failed to create comment.";
+                    return;
+                }
+
+                textarea.value = "";
+                message.textContent = "Comment added successfully.";
+
+                await loadComments();
+
+            } catch (error) {
+                message.textContent = "Something went wrong.";
+                console.error(error);
+            }
+        });
+
+    loadComments();
+</script>
+
+</body>
+</html>
+{{end}}

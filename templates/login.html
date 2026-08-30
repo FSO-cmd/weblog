@@ -1,0 +1,347 @@
+{{define "login"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · My Weblog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper: #f2ece0;
+            --card: #fffbf4;
+            --ink: #201f1b;
+            --ink-soft: #6b6459;
+            --pine: #33513f;
+            --pine-deep: #233a2c;
+            --rust: #b1502e;
+            --line: #ddd1b6;
+            --hole: #d8cba9;
+            --error: #a3352b;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #16150f;
+                --card: #201e18;
+                --ink: #eee7d8;
+                --ink-soft: #a89d87;
+                --pine: #83a891;
+                --pine-deep: #a3c7ac;
+                --rust: #cf7452;
+                --line: #34301f;
+                --hole: #16150f;
+                --error: #e08a7d;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid var(--pine);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; scroll-behavior: auto !important; }
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 6%;
+            width: 100%;
+        }
+
+        /* ------------------------------
+           Nav
+        ------------------------------ */
+
+        nav.wrap {
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+        }
+
+        .logo b { color: var(--rust); font-weight: 600; }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+        }
+
+        .nav-links a.new {
+            background: var(--pine);
+            color: #faf6ea;
+            border-radius: 5px;
+        }
+
+        .nav-links a.new:hover { background: var(--pine-deep); }
+
+        /* ------------------------------
+           Auth stage
+        ------------------------------ */
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 6% 80px;
+        }
+
+        .auth-card {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 36px 34px 30px;
+        }
+
+        .holes { display: flex; gap: 8px; margin-bottom: 20px; }
+        .holes span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--hole);
+            border: 1px solid var(--line);
+        }
+
+        .kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--rust);
+            margin: 0 0 10px;
+        }
+
+        .kicker::before { content: "— "; }
+
+        .auth-card h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: clamp(26px, 4vw, 30px);
+            letter-spacing: -0.6px;
+            margin: 0 0 6px;
+        }
+
+        .auth-sub {
+            font-family: 'Source Serif 4', serif;
+            font-size: 15px;
+            color: var(--ink-soft);
+            margin: 0 0 28px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11.5px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 7px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 11px 13px;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 15px;
+            color: var(--ink);
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            transition: border-color .15s ease;
+        }
+
+        .field input::placeholder { color: var(--ink-soft); opacity: .6; }
+
+        .field input:focus {
+            border-color: var(--pine);
+        }
+
+        .row-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -6px 0 24px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13.5px;
+            color: var(--ink-soft);
+        }
+
+        .remember input { accent-color: var(--pine); }
+
+        .forgot {
+            font-size: 13.5px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--rust);
+        }
+
+        .forgot:hover { text-decoration: underline; }
+
+        button.submit {
+            width: 100%;
+            padding: 13px;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #faf6ea;
+            background: var(--pine);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        button.submit:hover { background: var(--pine-deep); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 26px 0 20px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .signup-line {
+            text-align: center;
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .signup-line a {
+            font-weight: 600;
+            color: var(--rust);
+            text-decoration: none;
+        }
+
+        .signup-line a:hover { text-decoration: underline; }
+
+        .error-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: var(--paper);
+            border: 1px solid var(--error);
+            color: var(--error);
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 17px; }
+            .nav-links a:not(.new) { padding: 8px 8px; }
+            .auth-card { padding: 28px 22px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="wrap">
+    <a class="logo" href="/blog"><b>§</b> My Weblog</a>
+    <div class="nav-links">
+        <a href="/blog">Feed</a>
+        <a href="/register" class="new">Sign up</a>
+    </div>
+</nav>
+
+<main>
+    <div class="auth-card">
+        <div class="holes"><span></span><span></span></div>
+
+        <p class="kicker">Entry required</p>
+        <h1>Welcome back</h1>
+        <p class="auth-sub">Sign in to write, edit, and keep your private pages.</p>
+
+        {{if .Error}}
+        <div class="error-banner">⚠ {{.Error}}</div>
+        {{end}}
+
+        <form action="/login" method="POST">
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="your username" autocomplete="username" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+
+            <div class="row-between">
+                <label class="remember">
+                    <input type="checkbox" name="remember">
+                    Remember me
+                </label>
+                <a class="forgot" href="/forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="submit">Log in</button>
+        </form>
+
+        <div class="divider">New here</div>
+
+        <p class="signup-line">Don't have an account? <a href="/register">Create one</a></p>
+    </div>
+</main>
+
+</body>
+</html>
+{{end}}
