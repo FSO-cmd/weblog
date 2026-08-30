@@ -2,19 +2,20 @@ package main
 
 import (
 	"context"
+	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var err error
+func connectDB() (*pgxpool.Pool, error) {
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		dsn = "postgres://weblog:123456@localhost:5432/weblog"
+	}
 
-func connectDB() (*pgx.Conn, error) {
-	conn, err := pgx.Connect(
-		context.Background(),
-		"postgres://weblog:123456@localhost:5432/weblog",
-	)
+	pool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		return nil, err
 	}
-	return conn, nil
+	return pool, nil
 }
