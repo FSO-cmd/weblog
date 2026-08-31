@@ -1,0 +1,19 @@
+# Environment
+.env
+.env.*
+
+# Build output
+weblog.exe
+weblog
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
