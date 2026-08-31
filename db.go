@@ -10,6 +10,7 @@ import (
 func connectDB() (*pgxpool.Pool, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
+
 		dsn = "postgres://weblog:123456@localhost:5432/weblog"
 	}
 

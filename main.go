@@ -23,6 +23,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -251,7 +252,7 @@ func csrfProtection(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-var db *pgx.Conn
+var db *pgxpool.Pool
 
 var isProduction = strings.ToLower(os.Getenv("APP_ENV")) == "production"
 
@@ -277,7 +278,6 @@ func main() {
 
 	e.GET("/", home)
 
-	// Authentication
 	e.GET("/register", registerPage)
 	e.POST("/register", register, rateLimit(&registerLimiter, 5, time.Minute))
 	e.GET("/login", loginPage)
@@ -323,7 +323,7 @@ func main() {
 		WriteTimeout:      15 * time.Second,
 		IdleTimeout:       60 * time.Second,
 		ReadHeaderTimeout: 5 * time.Second,
-		MaxHeaderBytes:    1 << 20, // 1MB
+		MaxHeaderBytes:    1 << 20,
 	}
 
 	go func() {
@@ -345,11 +345,9 @@ func main() {
 		log.Println("shutdown error:", err)
 	}
 
-	db.Close(context.Background())
+	db.Close()
 }
 
-// auth is route middleware that requires a valid session cookie and
-// injects the authenticated user_id into the request context.
 func auth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c *echo.Context) error {
 		cookie, err := c.Cookie("session_id")
@@ -831,7 +829,7 @@ func createPost(c *echo.Context) error {
 	if err != nil {
 		return internalError(c, err)
 	}
-	defer tx.Rollback(ctx) // no-op once Commit succeeds
+	defer tx.Rollback(ctx)
 
 	var postID int
 
@@ -1239,7 +1237,7 @@ func generateFileName(originalName string) (string, error) {
 }
 
 func savePostImage(file *multipart.FileHeader) (string, error) {
-	const maxFileSize = 5 << 20 // 5MB
+	const maxFileSize = 5 << 20
 
 	if file.Size > maxFileSize {
 		return "", errors.New("image is too large. maximum size is 5MB")
